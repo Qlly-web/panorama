@@ -1,56 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-    }
-  </style>
-  <script src="./js/three.js"></script>
-  <script src="./js/CSS3DRenderer.js"></script>
-</head>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+    </style>
+    <script src="./js/three.js"></script>
+    <script src="./js/CSS3DRenderer.js"></script>
+  </head>
 
-<body>
-  <script>
-    var camera, scene, renderer;
+  <body>
+    <script>
+      var camera, scene, renderer;
 
-    /* 相机聚焦点 */
-    var target = new THREE.Vector3();
+      /* 相机聚焦点 */
+      var target = new THREE.Vector3();
 
-    /* lon:经度， lat:维度  经纬度是相机的聚焦点 */
-    var lon = 90, lat = 0;
+      /* lon:经度， lat:维度  经纬度是相机的聚焦点 */
+      var lon = 90,
+        lat = 0;
 
-    /* 相机聚焦点，弧度制 */
-    var phi = 0, theta = 0;
+      /* 相机聚焦点，弧度制 */
+      var phi = 0,
+        theta = 0;
 
-    /* 移动端输入的x,y */
-    var touchX, touchY;
+      /* 移动端输入的x,y */
+      var touchX, touchY;
 
-    /* 图片路径 */
-    var src = 'img/render/par.front.jpg';
+      /* 图片路径 */
+      var src = 'img/render/par.front.jpg';
 
-    /* 因为图片加载比较慢可以先设置一个背景图 */
-    document.body.style.backgroundImage = 'url('+src+")";
-    document.body.style.backgroundRepeat = 'no-repeat';
-    document.body.style.backgroundSize = window.innerWidth+'px '+window.innerHeight+'px';
+      /* 因为图片加载比较慢可以先设置一个背景图 */
+      document.body.style.backgroundImage = 'url(' + src + ")";
+      document.body.style.backgroundRepeat = 'no-repeat';
+      document.body.style.backgroundSize = window.innerWidth + 'px ' + window.innerHeight + 'px';
 
-    var img = new Image();
-    img.src = src;
+      var img = new Image();
+      img.src = src;
 
-    /* 图片加载完之后调用 */
-    img.onload = function () {
+      /* 图片加载完之后调用 */
+      img.onload = function() {
 
         init(img.width, src);
         animate();
 
-    };
+      };
 
-    function init(width, imageSrc) {
+      function init(width, imageSrc) {
 
         img = null;
 
@@ -65,53 +67,58 @@
         let format = imageSrc.slice(imageSrc.lastIndexOf('.'));
 
         /* 以下六个面 拼接成立方体 */
-        var sides = [
-            {
-                url: src + 'left' + format,
-                position: [-width / 2, 0, 0], /* 左 */
-                rotation: [0, Math.PI / 2, 0]
-            },
-            {
-                url: src + 'right' + format,
-                position: [width / 2, 0, 0], /* 右 */
-                rotation: [0, -Math.PI / 2, 0]
-            },
-            {
-                url: src + 'top' + format,
-                position: [0, width / 2, 0], /* 上 */
-                rotation: [Math.PI / 2, 0, Math.PI]
-            },
-            {
-                url: src + 'bottom' + format,
-                position: [0, -width / 2, 0], /* 下 */
-                rotation: [-Math.PI / 2, 0, Math.PI]
-            },
-            {
-                url: src + 'back' + format,
-                position: [0, 0, width / 2], /* 后 */
-                rotation: [0, Math.PI, 0]
-            },
-            {
-                url: src + 'front' + format,
-                position: [0, 0, -width / 2], /* 前 */
-                rotation: [0, 0, 0]
-            }
+        var sides = [{
+            url: src + 'left' + format,
+            position: [-width / 2, 0, 0],
+            /* 左 */
+            rotation: [0, Math.PI / 2, 0]
+          },
+          {
+            url: src + 'right' + format,
+            position: [width / 2, 0, 0],
+            /* 右 */
+            rotation: [0, -Math.PI / 2, 0]
+          },
+          {
+            url: src + 'top' + format,
+            position: [0, width / 2, 0],
+            /* 上 */
+            rotation: [Math.PI / 2, 0, Math.PI]
+          },
+          {
+            url: src + 'bottom' + format,
+            position: [0, -width / 2, 0],
+            /* 下 */
+            rotation: [-Math.PI / 2, 0, Math.PI]
+          },
+          {
+            url: src + 'back' + format,
+            position: [0, 0, width / 2],
+            /* 后 */
+            rotation: [0, Math.PI, 0]
+          },
+          {
+            url: src + 'front' + format,
+            position: [0, 0, -width / 2],
+            /* 前 */
+            rotation: [0, 0, 0]
+          }
         ];
 
         for (var i = 0; i < sides.length; i++) {
 
-            var side = sides[i];
+          var side = sides[i];
 
-            var element = document.createElement('img');
+          var element = document.createElement('img');
 
-            element.width = width + 6;
-            element.src = side.url;
+          element.width = width + 6;
+          element.src = side.url;
 
-            var css3Loader = new THREE.CSS3DObject(element);
-            css3Loader.position.fromArray(side.position);
-            css3Loader.rotation.fromArray(side.rotation);
+          var css3Loader = new THREE.CSS3DObject(element);
+          css3Loader.position.fromArray(side.position);
+          css3Loader.rotation.fromArray(side.rotation);
 
-            scene.add(css3Loader);
+          scene.add(css3Loader);
 
         }
 
@@ -128,18 +135,18 @@
 
         window.addEventListener('resize', onWindowResize, false);
 
-    }
+      }
 
-    function onWindowResize() {
+      function onWindowResize() {
 
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
 
         renderer.setSize(window.innerWidth, window.innerHeight);
 
-    }
+      }
 
-    function onDocumentMouseDown(event) {
+      function onDocumentMouseDown(event) {
 
         event.preventDefault();
 
@@ -148,9 +155,9 @@
         document.addEventListener('mousemove', onDocumentMouseMove, false);
         document.addEventListener('mouseup', onDocumentMouseUp, false);
 
-    }
+      }
 
-    function onDocumentMouseMove(event) {
+      function onDocumentMouseMove(event) {
 
         var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
         var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
@@ -163,9 +170,9 @@
         lat += movementY * speed;
 
 
-    }
+      }
 
-    function onDocumentMouseUp(event) {
+      function onDocumentMouseUp(event) {
 
         event.preventDefault();
 
@@ -174,9 +181,9 @@
         document.removeEventListener('mousemove', onDocumentMouseMove);
         document.removeEventListener('mouseup', onDocumentMouseUp);
 
-    }
+      }
 
-    function onDocumentMouseWheel(event) {
+      function onDocumentMouseWheel(event) {
 
         /* 缩放速度 */
         var speed = 0.008;
@@ -188,9 +195,9 @@
 
         camera.updateProjectionMatrix();
 
-    }
+      }
 
-    function onDocumentTouchStart(event) {
+      function onDocumentTouchStart(event) {
 
         event.preventDefault();
 
@@ -199,9 +206,9 @@
         touchX = touch.screenX;
         touchY = touch.screenY;
 
-    }
+      }
 
-    function onDocumentTouchMove(event) {
+      function onDocumentTouchMove(event) {
 
         event.preventDefault();
 
@@ -213,9 +220,9 @@
         touchX = touch.screenX;
         touchY = touch.screenY;
 
-    }
+      }
 
-    function animate() {
+      function animate() {
 
         requestAnimationFrame(animate);
 
@@ -231,8 +238,8 @@
 
         renderer.render(scene, camera);
 
-    }
-  </script>
-</body>
+      }
+    </script>
+  </body>
 
 </html>

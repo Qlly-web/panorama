@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>THREE.Group 对象组合</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        /* 溢出隐藏 */
+      }
+    </style>
+    <script src="./js/three.js"></script>
+    <script src="./js/WebGL.js"></script>
+    <script src="./js/dat.gui.min.js"></script>
+    <script src="./js/OrbitControls.js"></script>
+  </head>
+
+  <body>
+    <script>
+      let scene, camera, renderer, controls, guiControls;
+
+      /* 场景 */
+      function initScene() {
+        scene = new THREE.Scene();
+      }
+
+      /* 相机 */
+      function initCamera() {
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10000);
+        camera.position.set(30, 20, 50);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+      }
+
+      /* 渲染器 */
+      function initRender() {
+        renderer = new THREE.WebGLRenderer({
+          antialias: true
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+      }
+
+      /* 控制器 */
+      function initControls() {
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        /* 属性参数默认 */
+      }
+
+      /* 场景中的内容 */
+      function initContent() {
+        let dir = new THREE.Vector3(0, 2, 0);
+        dir.normalize();
+        let origin = new THREE.Vector3(0, 0, 0);
+        let length = 5;
+        let hex = 0xff0000;
+        let texture = new THREE.TextureLoader().load('./img/1.png');
+        let sphereGeometry = new THREE.SphereGeometry(1000, 50, 50);
+        sphereGeometry.scale(-1, 1, 1);
+        let sphereMaterial = new THREE.MeshBasicMaterial({
+          map: texture
+        });
+        let sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        scene.add(sphere);
+      }
+      /* 窗口变动触发 */
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+
+      /* 初始化 */
+      function init() {
+        initScene();
+        initCamera();
+        initRender();
+        initControls();
+        initContent();
+        /* 监听事件 */
+        window.addEventListener('resize', onWindowResize, false);
+      }
+
+      /* 循环渲染 */
+      function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+      }
+
+      /* 初始加载 */
+      (function() {
+        console.log("three init start...");
+        init();
+        animate();
+        console.log("three init send...");
+      })();
+    </script>
+  </body>
+
+</html>
